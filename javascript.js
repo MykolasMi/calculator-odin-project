@@ -20,13 +20,13 @@ const btnEqual = document.getElementById('equality');
 
 let equasion = "";
 let displayValue = "";
+const equasionArray = [];
 
 
 btnAC.addEventListener('click', function(e) {
     populateDisplay("");
 })
 btnDivide.addEventListener('click', function(e) {
-    assignOperator("/")
     populateDisplay("/");
 })
 btn7.addEventListener('click', function(e) {
@@ -39,7 +39,6 @@ btn9.addEventListener('click', function(e) {
     populateDisplay("9");
 })
 btnMultiply.addEventListener('click', function(e) {
-    assignOperator("*")
     populateDisplay("*");
 })
 btn4.addEventListener('click', function(e) {
@@ -52,7 +51,6 @@ btn6.addEventListener('click', function(e) {
     populateDisplay("6");
 })
 btnSubstract.addEventListener('click', function(e) {
-    assignOperator("-")
     populateDisplay("-");
 })
 btn1.addEventListener('click', function(e) {
@@ -65,7 +63,6 @@ btn3.addEventListener('click', function(e) {
     populateDisplay("3");
 })
 btnAdd.addEventListener('click', function(e) {
-    assignOperator("+")
     populateDisplay("+");
 })
 btn0.addEventListener('click', function(e) {
@@ -78,13 +75,9 @@ btnC.addEventListener('click', function(e) {
     populateDisplay("error");
 })
 btnEqual.addEventListener('click', function(e) {
-    populateDisplay(operate(value1, value2, operator));
+    operate(equasionArray);
 })
 
-
-function assignOperator(operator) {
-
-}
 
 function populateDisplay(value) {
 
@@ -93,18 +86,19 @@ function populateDisplay(value) {
         display.textContent = "";
         displayValue="";
     }
-    else if (value == "") { //pakeisti efektyviau
-
+    else if (value == "/" || value == "*" || value == "-" || value == "+") { //pakeisti efektyviau
+        equasionArray.push(displayValue);
+        equasionArray.push(value);
+        display.textContent += value;
+        displayValue = "";
     }
     else {
         display.textContent += value;
         displayValue+=value;
     }
 
-
-
-
     console.log(displayValue);
+    console.log(equasionArray);
 }
 
 
