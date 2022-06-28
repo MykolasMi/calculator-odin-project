@@ -75,13 +75,13 @@ btnC.addEventListener('click', function(e) {
     populateDisplay("error");
 })
 btnEqual.addEventListener('click', function(e) {
+    equasionArray.push(displayValue);
     operate(equasionArray);
+    console.log(equasionArray);
 })
 
 
 function populateDisplay(value) {
-
-
     if (value == "") {
         display.textContent = "";
         displayValue="";
@@ -101,6 +101,25 @@ function populateDisplay(value) {
     console.log(equasionArray);
 }
 
+function operate(array) {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === '+') {
+            display.textContent = add(array[i-1],array[i+1]);
+        }
+        else if (array[i] === '-') {
+            display.textContent = subtract(array[i-1],array[i+1]);
+        }
+        else if (array[i] === '*') {
+            display.textContent = multiply(array[i-1],array[i+1]);
+        }
+        else if (array[i] === '/') {
+            display.textContent = divide(array[i-1],array[i+1]);
+        }
+        else {
+            continue;
+        }
+    }
+}
 
 function add(a, b) {
     return a + b;
@@ -116,20 +135,4 @@ function multiply(a, b) {
 
 function divide(a, b) {
     return a / b;
-}
-
-
-function operate(a, b, operator) {
-    if (operator === '+') {
-        return add(a,b);
-    }
-    else if (operator === '-') {
-        return subtract(a,b);
-    }
-    else if (operator === '*') {
-        return multiply(a,b);
-    }
-    else if (operator === '/') {
-        return divide(a,b);
-    }
 }
