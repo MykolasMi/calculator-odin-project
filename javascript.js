@@ -1,3 +1,5 @@
+//console.log (operate (0, 0, "/"))
+
 function add(a, b) {
     return a + b;
 }
@@ -16,16 +18,16 @@ function divide(a, b) {
 
 
 function operate(a, b, operator) {
-    if (operator === +) {
+    if (operator === '+') {
         return add(a,b);
     }
-    else if (operator === -) {
+    else if (operator === '-') {
         return subtract(a,b);
     }
-    else if (operator === *) {
+    else if (operator === '*') {
         return multiply(a,b);
     }
-    else if (operator === /) {
+    else if (operator === '/') {
         return divide(a,b);
     }
 }
