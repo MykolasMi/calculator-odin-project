@@ -18,8 +18,8 @@ const btnDot = document.getElementById('dot');
 const btnC = document.getElementById('clear');
 const btnEqual = document.getElementById('equality');
 
-let equasion = "";
-let displayValue = "";
+let nextOperator = "";
+let displayTemporaryValue = "";
 const equasionArray = [];
 
 
@@ -75,54 +75,95 @@ btnC.addEventListener('click', function(e) {
     populateDisplay("error");
 })
 btnEqual.addEventListener('click', function(e) {
-    equasionArray.push(displayValue);
+    equasionArray.push(displayTemporaryValue);
     operate(equasionArray);
+
     console.log(equasionArray);
 })
 
-
 function populateDisplay(value) {
-    if (value == "") {
-        display.textContent = "";
-        displayValue="";
+    if (value == "") { 
+        clearAll();
     }
     else if (value == "/" || value == "*" || value == "-" || value == "+") { //pakeisti efektyviau
-        equasionArray.push(displayValue);
-        equasionArray.push(value);
-        display.textContent += value;
-        displayValue = "";
+        if (equasionArray.length>=2) {
+            equasionArray.push(displayTemporaryValue);
+            nextOperator=value;
+            operate(equasionArray);
+            nextOperator = "";
+        }
+        else {
+            equasionArray.push(displayTemporaryValue);
+            equasionArray.push(value);
+            display.textContent += value;
+            displayTemporaryValue = "";
+         }
     }
     else {
         display.textContent += value;
-        displayValue+=value;
+        displayTemporaryValue+=value;
     }
 
-    console.log(displayValue);
+    console.log(displayTemporaryValue);
     console.log(equasionArray);
 }
 
+function clearAll() {
+    display.textContent = "";
+    displayTemporaryValue= "";
+    equasionArray.splice(0, equasionArray.length)
+}
+
 function operate(array) {
+    console.log(array);
+
+    displayTemporaryValue = "";
+    /*let biggerPosition = 0;
+
+    while (biggerPosition>=0) {
+        biggerPosition = array.findIndex((first) => (first === "/" || first === "*"));
+        console.log(biggerPosition); //kazka perdaryti del indexu, nes negaudo.
+
+        if (array[biggerPosition] === '*') {
+          let result = multiply(array[biggerPosition-1],array[biggerPosition+1]);
+          array.splice(biggerPosition - 1, 3);
+          array.push(result);
+        }
+        else if (array[biggerPosition] === '/') {
+            let result = divide(array[biggerPosition-1],array[biggerPosition+1]);
+            array.splice(biggerPosition - 1, 3);
+            array.push(result);
+        }
+    }*/
+
     for (let i = 0; i < array.length; i++) {
         if (array[i] === '+') {
-            display.textContent = add(array[i-1],array[i+1]);
+            result = add(array[i-1],array[i+1]);
+            array.splice([i-1], 4);
+            display.textContent = result;
+            displayTemporaryValue = result;
         }
         else if (array[i] === '-') {
-            display.textContent = subtract(array[i-1],array[i+1]);
-        }
-        else if (array[i] === '*') {
-            display.textContent = multiply(array[i-1],array[i+1]);
-        }
-        else if (array[i] === '/') {
-            display.textContent = divide(array[i-1],array[i+1]);
+            result = subtract(array[i-1],array[i+1]);
+            array.splice([i-1], 4);
+            display.textContent = result;
+            displayTemporaryValue = result;
         }
         else {
             continue;
         }
     }
+
+    if (nextOperator == "") {
+        return;
+    }
+    else {
+        populateDisplay(nextOperator);
+    }
 }
 
 function add(a, b) {
-    return a + b;
+    return +a + +b;
 }
 
 function subtract(a, b) {
@@ -136,3 +177,6 @@ function multiply(a, b) {
 function divide(a, b) {
     return a / b;
 }
+
+
+//rezultatas palieka array ir nebepriema nauju skaiciu
