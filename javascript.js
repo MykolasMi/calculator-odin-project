@@ -21,6 +21,8 @@ const btnEqual = document.getElementById('equality');
 let nextOperator = "";
 let displayTemporaryValue = "";
 const equasionArray = [];
+let clear = false;
+let dotAmount = 0;
 
 
 btnAC.addEventListener('click', function(e) {
@@ -69,7 +71,10 @@ btn0.addEventListener('click', function(e) {
     populateDisplay("0");
 })
 btnDot.addEventListener('click', function(e) {
-    populateDisplay(".");
+    if (dotAmount<1) {
+        populateDisplay(".");
+        dotAmount++;
+    }
 })
 btnC.addEventListener('click', function(e) {
     populateDisplay("error");
@@ -82,6 +87,10 @@ btnEqual.addEventListener('click', function(e) {
 })
 
 function populateDisplay(value) {
+    if (clear === true) {
+        clearAll();
+        clear = false;
+    }
     if (value == "") { 
         clearAll();
     }
@@ -91,12 +100,14 @@ function populateDisplay(value) {
             nextOperator=value;
             operate(equasionArray);
             nextOperator = "";
+            dotAmount = 0;
         }
         else {
             equasionArray.push(displayTemporaryValue);
             equasionArray.push(value);
             display.textContent += value;
             displayTemporaryValue = "";
+            dotAmount = 0;
          }
     }
     else {
@@ -116,35 +127,38 @@ function clearAll() {
 
 function operate(array) {
     console.log(array);
-
     displayTemporaryValue = "";
-    /*let biggerPosition = 0;
-
-    while (biggerPosition>=0) {
-        biggerPosition = array.findIndex((first) => (first === "/" || first === "*"));
-        console.log(biggerPosition); //kazka perdaryti del indexu, nes negaudo.
-
-        if (array[biggerPosition] === '*') {
-          let result = multiply(array[biggerPosition-1],array[biggerPosition+1]);
-          array.splice(biggerPosition - 1, 3);
-          array.push(result);
-        }
-        else if (array[biggerPosition] === '/') {
-            let result = divide(array[biggerPosition-1],array[biggerPosition+1]);
-            array.splice(biggerPosition - 1, 3);
-            array.push(result);
-        }
-    }*/
 
     for (let i = 0; i < array.length; i++) {
+        
+
         if (array[i] === '+') {
-            result = add(array[i-1],array[i+1]);
+            result = roundUp(add(array[i-1],array[i+1]), 1);
             array.splice([i-1], 4);
             display.textContent = result;
             displayTemporaryValue = result;
         }
         else if (array[i] === '-') {
-            result = subtract(array[i-1],array[i+1]);
+            result = roundUp(subtract(array[i-1],array[i+1]), 1);
+            array.splice([i-1], 4);
+            display.textContent = result;
+            displayTemporaryValue = result;
+        }
+        else if (array[i] === '*') {
+            result = roundUp(multiply(array[i-1],array[i+1]), 1);
+            array.splice([i-1], 4);
+            display.textContent = result;
+            displayTemporaryValue = result;
+        }
+        else if (array[i] === '/') {
+            if (array[i+1] === '0') {
+                display.textContent = "You should\n't do that";
+                displayTemporaryValue = "";
+                array.splice([i-1], 4);
+                clear = true;
+                continue;
+            }
+            result = roundUp(divide(array[i-1],array[i+1]), 1);
             array.splice([i-1], 4);
             display.textContent = result;
             displayTemporaryValue = result;
@@ -178,5 +192,7 @@ function divide(a, b) {
     return a / b;
 }
 
-
-//rezultatas palieka array ir nebepriema nauju skaiciu
+function roundUp(num, precision) {
+    precision = Math.pow(10, precision)
+    return Math.ceil(num * precision) / precision
+}
